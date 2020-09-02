@@ -1,0 +1,238 @@
+<!doctype html>
+
+<!-- Tic Tac Toe Grid Template by https://codepen.io/shammadahmed/pen/JOWEGW -->
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <title>Unbeatable Tic Tac Toe</title>
+    <style media="screen">
+        .game-board
+        {
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+            background-color: #34495e;
+            color: #fff;
+            border: 6px solid #2c3e50;
+            border-radius: 10px;
+
+            display: grid;
+            grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+        }
+
+        .box
+        {
+            border: 6px solid #2c3e50;
+            border-radius: 2px;
+            font-family: Helvetica;
+            font-weight: bold;
+            font-size: 4em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container p-4">
+        <div class="game-board">
+            <div class="box"><button class="btn" name="button0" onclick="temp(0)"></button></div>
+            <div class="box"><button class="btn" name="button1" onclick="temp(1)"></button></div>
+            <div class="box"><button class="btn" name="button2" onclick="temp(2)"></button></div>
+            <div class="box"><button class="btn" name="button3" onclick="temp(3)"></button></div>
+            <div class="box"><button class="btn" name="button4" onclick="temp(4)"></button></div>
+            <div class="box"><button class="btn" name="button5" onclick="temp(5)"></button></div>
+            <div class="box"><button class="btn" name="button6" onclick="temp(6)"></button></div>
+            <div class="box"><button class="btn" name="button7" onclick="temp(7)"></button></div>
+            <div class="box"><button class="btn" name="button8" onclick="temp(8)"></button></div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        grid = [
+            [-1,-1,-1],
+            [-1,-1,-1],
+            [-1,-1,-1],
+        ]
+        function getCell(x,y){
+            return 3*x+y;
+        }
+        function check_draw(){
+            for(let i=0;i<3;i++){
+                for(let j=0;j<3;j++){
+                    if(grid[i][j]==-1)return false;
+                }
+            }
+            return true;
+        }
+        function getCord(cell){
+            let x = cell/3;
+            let y = cell%3;
+            return [parseInt(x),y];
+        }
+        function display_board(){
+            for(let i=0;i<9;i++){
+                let cell_info = getCord(i);
+                if(grid[cell_info[0]][cell_info[1]]==1){
+
+                    let d = document.getElementsByName('button'+i);
+                    if (d.length == 0){
+                        continue;
+                    }
+                    d[0].parentElement.innerText="X";
+                }else if(grid[cell_info[0]][cell_info[1]]==0){
+                    let d = document.getElementsByName('button'+i);
+                    if (d.length == 0){
+                        continue;
+                    }
+                    d[0].parentElement.innerText="O";
+                }
+            }
+        }
+        function check_win(player){
+            if(player==1){
+                for(let i=0;i<3;i++){
+                    if(grid[i][0]==1 && grid[i][1]==1 && grid[i][2]==1) return true;
+                }
+                for(let i=0;i<3;i++)
+                    if(grid[0][i]==1 && grid[1][i]==1 && grid[2][i]==1) return true;
+                if(grid[0][0]==1 && grid[1][1]==1 && grid[2][2]==1)return true;
+                if(grid[0][2]==1 && grid[1][1]==1 && grid[2][0]==1)return true;
+                return false;
+            }else{
+                for(let i=0;i<3;i++)
+                    if(grid[i][0]==0 && grid[i][1]==0 && grid[i][2]==0) return true;
+                for(let i=0;i<3;i++)
+                    if(grid[0][i]==0 && grid[1][i]==0 && grid[2][i]==0) return true;
+                if(grid[0][0]==0 && grid[1][1]==0 && grid[2][2]==0)return true;
+                if(grid[0][2]==0 && grid[1][1]==0 && grid[2][0]==0)return true;
+                return false;
+            }
+        }
+
+        function make_move(cell,player){
+            let cell_info = getCord(cell);
+            grid[cell_info[0]][cell_info[1]]=player;
+        }
+
+
+        function undo_make_move(x,y){
+            grid[x][y]=-1;
+        }
+
+        function random_shuffle(array) {
+            let currentIndex = array.length, temporaryValue, randomIndex;
+            while (0 !== currentIndex) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+            return array;
+        }
+
+        function make_random_move(player){
+            v = []
+            for(let i=0;i<3;i++){
+                for(let j=0;j<3;j++){
+                    if(grid[i][j]==-1){
+                        v.push(getCell(i,j));
+                    }
+                }
+            }
+
+            if(v.length==0){
+                alert("Game Draw !");
+                location.reload();
+            }
+
+            random_shuffle(v);
+            let temp = v[v.length/2];
+            temp = getCord(temp);
+            if(player==1){
+                grid[temp[0]][temp[1]]=1;
+            }else{
+                grid[temp[0]][temp[1]]=0;
+            }
+        }
+        function solve(player,dep){
+            if(check_win(player^1)){
+                return [0,-1,-1];
+            }
+
+            let maxi=0;
+            let x=-1;
+            let y=-1;
+
+            let cnt=0;
+            for(let i=0;i<3;i++){
+                for(let j=0;j<3;j++){
+                    if(grid[i][j]==-1){
+                        make_move(getCell(i,j),player);
+                        let popat = solve(player^1,dep+1);
+                        undo_make_move(i,j);
+                        let counter = 100-popat[0];
+                        if(counter>=maxi){
+                            maxi=counter;
+                            x=i;
+                            y=j;
+                            cnt++;
+                        }
+
+                    }
+                }
+            }
+
+            if(cnt==0){
+                return [50,-1,-1];
+            }
+
+
+            return [maxi,x,y];
+        }
+
+        function temp(cell){
+            make_move(cell,1);
+            display_board();
+            if(check_win(1)){
+                alert("You Win !");
+                location.reload();
+                return;
+            }
+            if(check_draw()){
+                alert("Game Draw !");
+                location.reload();
+                return;
+            }
+            popat = solve(0,0);
+            if(popat[0]==0){
+                console.log("RANDOM");
+                make_random_move(0);
+            }else{
+                make_move(getCell(popat[1],popat[2]),0);
+            }
+            display_board();
+            if(check_win(0)){
+                alert("Computer Wins");
+                location.reload();
+                return;
+            }
+            if(check_draw()){
+                alert("Game Draw !");
+                location.reload();
+                return;
+            }
+        }
+    </script>
+  </body>
+</html>
